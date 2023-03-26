@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
 import pandas as pd
 from scipy import stats
 
@@ -10,24 +10,12 @@ def upload_file():
     data = pd.read_csv(file)
     x = data['x']
     y = data['y']
-    print(x)
-    print(y)
+    print(x._values)
+    print(y._values)
 
     res = stats.linregress(x, y)
 
-    return {'slope':res.slope,'intercept':res.intercept}
-
-
-@app.route('/fitModel', methods=['POST'])
-def fitModel():
-    json_data = request.get_json()
-
-    x = json_data['x']
-    y = json_data['y']
-
-    res = stats.linregress(x, y)
-
-    return {'slope':res.slope,'intercept':res.intercept}
+    return {'slope':res.slope,'intercept':res.intercept, 'data': data.to_dict(orient='list')}
 
 if __name__ == '__main__':
     app.run(debug=True)

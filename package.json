@@ -1,18 +1,39 @@
 {
-    "name": "material-ui",
-    "main": "index.tsx",
-    "dependencies": {
-      "@emotion/react": "latest",
-      "@emotion/styled": "latest",
-      "@mui/material": "latest",
-      "@types/react": "latest",
-      "@types/react-dom": "latest",
-      "react": "latest",
-      "react-dom": "latest",
-      "typescript": "latest"
-    },
-    "devDependencies": {
-      "react-scripts": "latest"
-    }
+  "name": "test_project",
+  "main": "index.tsx",
+  "dependencies": {
+    "@emotion/react": "latest",
+    "@emotion/styled": "latest",
+    "@mui/material": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "typescript": "latest",
+    "react-chartjs-2": "latest",
+    "csv-parse": "latest",
+    "react-plotlyjs": "latest",
+    "stream-browserify": "latest"
+  },
+  "devDependencies": {
+    "react-scripts": "latest"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
-  
+}
