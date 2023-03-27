@@ -1,17 +1,12 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
-import { Button, Input } from "@mui/material";
+import { Button, Container, Input, Paper } from "@mui/material";
 import { useState, useEffect } from "react";
-import parse from "csv-parse";
-import { Scatter } from "react-chartjs-2";
-import { Chart, registerables } from "chart.js";
-Chart.register(...registerables);
-import Plot from "react-plotlyjs";
+import Plot from "react-plotly.js";
 
 function App() {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [showComponent, setShowComponent] = useState(false);
-  const [response, setResponse] = useState([]);
+  const [graph, setGraph] = useState(null);
 
   const onFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -26,55 +21,38 @@ function App() {
       body: formData,
     })
       .then((response) => response.json())
-      .then((data) => {
-        setResponse(data);
-        console.log(data);
+      .then((response) => {
+        console.log(response);
+        setGraph({
+          data: response.data, //{ x: response.data.x, y: response.data.y },
+          slope: response.slope,
+          intercept: response.intercept,
+        });
       })
       .catch((error) => {
         console.error(error);
       });
-    setShowComponent(true);
   };
 
   return (
-    <div>
+    <Container>
       <h1>File Upload Example:</h1>
       <Input type="file" onChange={onFileChange} />
       <Button onClick={onFileUpload}>Upload</Button>
       <div>
-        {showComponent &&
-          ScatterPlot(response.data, response.slope, response.intercept)}
+        {graph && (
+          <ScatterPlot
+            data={graph.data}
+            slope={graph.slope}
+            intercept={graph.intercept}
+          />
+        )}
       </div>
-    </div>
+    </Container>
   );
 }
 
-function ScatterPlot2(data) {
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    // Fetch the data from the server using a fetch or axios call
-    // ...
-    const demoData = {
-      labels: ["Data points"],
-      datasets: [
-        {
-          label: "Demo data",
-          data: data,
-        },
-      ],
-    };
-    setData(demoData);
-  }, []);
-
-  return (
-    <div>
-      {data ? <Scatter data={data} options={{}} /> : <p>Loading data...</p>}
-    </div>
-  );
-}
-
-function ScatterPlot(data, slope, intercept) {
+function ScatterPlot({ data, slope, intercept }) {
   const [trace, setTrace] = useState({
     x: [],
     y: [],
@@ -94,16 +72,18 @@ function ScatterPlot(data, slope, intercept) {
     console.log(data);
     console.log(slope);
     console.log(intercept);
-    if (data && data.length > 0) {
+    if (data) {
       // Extract x and y values from data
-      const xValues = data.map((d) => d.x);
-      const yValues = data.map((d) => d.y);
-
+      const xValues = data.x;
+      const yValues = data.y;
+      console.log(xValues);
+      console.log(yValues);
       // Create scatter plot trace
       const scatterTrace = { ...trace };
       scatterTrace.x = xValues;
       scatterTrace.y = yValues;
       setTrace(scatterTrace);
+      console.log(scatterTrace);
 
       // Create line of best fit trace
       const lineTrace = { ...line };
@@ -112,17 +92,50 @@ function ScatterPlot(data, slope, intercept) {
       lineTrace.x = lineXValues;
       lineTrace.y = lineYValues;
       setLine(lineTrace);
+      console.log(lineTrace);
     }
   }, [data, slope, intercept]);
 
+  const layout = {
+    title: "Scatter Plot and Line Chart",
+    xaxis: { title: "X Axis" },
+    yaxis: { title: "Y Axis" },
+  };
+  return (
+    <Paper>
+      <Plot data={[trace, line]} layout={layout} />
+    </Paper>
+  );
+}
+
+function ScatterLineChart({ data }) {
+  const trace1 = {
+    x: data.x,
+    y: data.y,
+    mode: "markers",
+    type: "scatter",
+    name: "Scatter Plot",
+  };
+
+  const trace2 = {
+    x: data.x,
+    y: data.y,
+    mode: "lines",
+    type: "scatter",
+    name: "Linear Fit",
+  };
+
+  const layout = {
+    title: "Scatter Plot and Linear Fit",
+    xaxis: { title: "X Axis" },
+    yaxis: { title: "Y Axis" },
+  };
+
   return (
     <Plot
-      data={[trace, line]}
-      layout={{
-        width: 800,
-        height: 600,
-        title: "Scatter Plot with Line of Best Fit",
-      }}
+      data={[trace1, trace2]}
+      layout={layout}
+      config={{ responsive: true }}
     />
   );
 }

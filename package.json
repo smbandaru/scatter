@@ -10,10 +10,8 @@
     "react": "latest",
     "react-dom": "latest",
     "typescript": "latest",
-    "react-chartjs-2": "latest",
-    "csv-parse": "latest",
-    "react-plotlyjs": "latest",
-    "stream-browserify": "latest"
+    "react-plotly.js": "latest",
+    "plotly.js": "latest"
   },
   "devDependencies": {
     "react-scripts": "latest"
